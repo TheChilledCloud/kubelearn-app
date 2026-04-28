@@ -1,0 +1,604 @@
+.flashcard {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 400px;
+  height: 200px;
+  cursor: pointer;
+  margin: 1rem auto;
+}
+
+.flashcardInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flipped .flashcardInner {
+  transform: rotateY(180deg);
+}
+
+.flashcardFront, .flashcardBack {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: var(--bg-alt);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.flashcardBack {
+  transform: rotateY(180deg);
+  background: var(--primary);
+  color: white;
+}
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-top: 1rem;
+}
+
+/* Quiz */
+.quiz {
+  background: var(--bg-alt);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid var(--card-border);
+}
+
+.quiz h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--bg);
+  border: 1px solid var(--card-border);
+  border-radius: 0.75rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+  font-size: 1rem;
+}
+
+.optionLetter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--card-border);
+  font-weight: 700;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.option:hover {
+  border-color: var(--primary);
+  background: rgba(50, 108, 229, 0.1);
+}
+
+.correct {
+  background: rgba(34, 197, 94, 0.15) !important;
+  border-color: var(--success) !important;
+  color: var(--success);
+}
+
+.correct .optionLetter {
+  background: var(--success);
+  color: white;
+}
+
+.wrong {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: var(--error) !important;
+  color: var(--error);
+}
+
+.wrong .optionLetter {
+  background: var(--error);
+  color: white;
+}
+
+.explanation {
+  margin-top: 1.5rem;
+}
+
+.explanationCorrect {
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: var(--success);
+}
+
+.explanationWrong {
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--error);
+}
+
+.explanationWrong p {
+  margin-top: 0.5rem;
+  color: var(--text);
+}
+
+.explanationText {
+  margin-top: 0.75rem;
+  color: var(--text-dim) !important;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Terminal */
+.terminal {
+  background: #0a0e17;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid #1e293b;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  margin: 2rem 0;
+}
+
+.terminalHeader {
+  background: #151b28;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dots {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff5f56;
+}
+
+.dots span:nth-child(2) { background: #ffbd2e; }
+.dots span:nth-child(3) { background: #27c93f; }
+
+.title {
+  font-size: 0.75rem;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.terminalBody {
+  padding: 1.5rem;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.instruction {
+  color: #6b7280;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.promptLine {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.prompt {
+  color: var(--success);
+  font-weight: bold;
+}
+
+.terminalInput {
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  font-family: inherit;
+  font-size: 1.1rem;
+  width: 100%;
+  outline: none;
+}
+
+.success {
+  color: var(--success);
+  margin-top: 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Character match indicator */
+.charMatch {
+  margin-top: 0.75rem;
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 0.05em;
+  font-size: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.charCorrect {
+  color: var(--success);
+}
+
+.charWrong {
+  color: var(--error);
+  text-decoration: underline;
+}
+
+.charPending {
+  color: #333;
+}
+
+/* Hint area */
+.hintArea {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hintBtn {
+  align-self: flex-start;
+  background: transparent;
+  border: 1px dashed #444;
+  color: #94a3b8;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
+
+.hintBtn:hover {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+
+.hintText {
+  color: #f59e0b;
+  font-size: 0.95rem;
+}
+
+.hintText code {
+  background: rgba(245, 158, 11, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+}
+
+.revealedAnswer {
+  background: rgba(50, 108, 229, 0.1);
+  border: 1px solid rgba(50, 108, 229, 0.3);
+  border-radius: 0.75rem;
+  padding: 1rem 1.5rem;
+}
+
+.revealedAnswer p {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.answerCode {
+  display: block;
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--secondary);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin: 0.5rem 0;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  user-select: none;
+}
+
+.revealNote {
+  font-style: italic;
+  font-size: 0.8rem !important;
+  color: var(--text-dim) !important;
+}
+
+/* ============================================ */
+/* Problem Scenario Styles                       */
+/* ============================================ */
+
+.problemContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.scenarioBox {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(245, 158, 11, 0.08));
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 1rem;
+  padding: 2rem;
+  position: relative;
+}
+
+.scenarioIcon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.scenarioTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ef4444;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.scenarioText {
+  color: var(--text);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+/* Diagnostic section */
+.diagSection {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+.diagTitle {
+  font-size: 1.15rem;
+  margin-bottom: 0.25rem;
+}
+
+.diagSubtitle {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.diagSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.diagStep {
+  background: var(--bg);
+  border: 1px solid var(--card-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  transition: var(--transition);
+}
+
+.diagStepActive {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-glow);
+}
+
+.diagStepDone {
+  border-color: rgba(34, 197, 94, 0.3);
+  background: rgba(34, 197, 94, 0.04);
+}
+
+.diagStepHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.diagStepNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--card-border);
+  font-weight: 700;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.diagStepDone .diagStepNum {
+  background: var(--success);
+  color: white;
+}
+
+.diagStepLabel {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.diagTerminal {
+  background: #0a0e17;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  margin-top: 0.75rem;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.diagPromptLine {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.diagHint {
+  color: #f59e0b;
+  font-size: 0.8rem;
+  margin-top: 0.75rem;
+  font-family: var(--font-sans);
+}
+
+.diagHintCode {
+  background: rgba(245, 158, 11, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+}
+
+.diagReveal {
+  background: rgba(50, 108, 229, 0.1);
+  border: 1px solid rgba(50, 108, 229, 0.3);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-top: 0.75rem;
+}
+
+.diagReveal p {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  font-family: var(--font-sans);
+}
+
+.diagResult {
+  margin-top: 0.5rem;
+  background: #0a0e17;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.diagCommand {
+  color: var(--success);
+  font-size: 0.9rem;
+}
+
+.diagOutput {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.diagNextBtn {
+  margin-top: 0.75rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.diagNextBtn:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+/* Solution reveal */
+.revealSolutionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(50, 108, 229, 0.1));
+  border: 1px dashed rgba(34, 197, 94, 0.4);
+  border-radius: 0.75rem;
+  color: var(--success);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.revealSolutionBtn:hover {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(50, 108, 229, 0.2));
+  border-color: var(--success);
+  transform: translateY(-2px);
+}
+
+.solutionBox {
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+.solutionTitle {
+  font-size: 1.15rem;
+  color: var(--success);
+  margin-bottom: 1rem;
+}
+
+.solutionContent {
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.solutionContent p {
+  margin-bottom: 0.75rem;
+}
+
+.takeawaysBox {
+  margin-top: 1.5rem;
+  background: rgba(50, 108, 229, 0.08);
+  border: 1px solid rgba(50, 108, 229, 0.2);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+}
+
+.takeawaysTitle {
+  font-size: 1rem;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+
+.takeawaysList {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.takeawaysList li {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.takeawaysList li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-weight: 700;
+}
