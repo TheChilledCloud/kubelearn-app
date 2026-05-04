@@ -52,6 +52,11 @@ export default function LearnPage() {
     const isLastStep = currentStepIdx === module.steps.length - 1;
     const newScore = (moduleProgress?.score || 0) + scoreDelta;
 
+    setModuleProgress(prev => ({
+      ...prev,
+      score: newScore,
+    }));
+
     await fetch('/api/progress', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -89,6 +94,10 @@ export default function LearnPage() {
   // Keyboard navigation
   useEffect(() => {
     const handler = (e) => {
+      if (e.key === 'Enter' && stepCompleted) {
+        nextStep();
+        return;
+      }
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       if (e.key === 'ArrowLeft') prevStep();
       if (e.key === 'ArrowRight' && stepCompleted) nextStep();

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { modules } from '@/data/courseContent';
 import styles from './quiz.module.css';
@@ -81,13 +81,29 @@ export default function QuizPage() {
     setUserAnswers(prev => ({ ...prev, [currentIdx]: idx }));
   };
 
-  const nextQuestion = () => {
+  const nextQuestion = useCallback(() => {
     if (currentIdx + 1 >= questions.length) {
       setFinished(true);
     } else {
       setCurrentIdx(prev => prev + 1);
     }
-  };
+  }, [currentIdx, questions.length]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter') {
+        const q = questions[currentIdx];
+        const selected = userAnswers[currentIdx];
+        if (selected !== undefined && q && selected === q.answer) {
+          nextQuestion();
+        }
+      }
+    };
+    if (quizStarted && !finished) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [quizStarted, finished, currentIdx, questions, userAnswers, nextQuestion]);
 
   const prevQuestion = () => {
     if (currentIdx > 0) {

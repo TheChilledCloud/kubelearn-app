@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  kubelearn:
+    container_name: kubelearn
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kubelearn:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - kubelearn-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  kubelearn-data:

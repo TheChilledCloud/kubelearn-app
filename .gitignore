@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Database
 data/
+
+# Documentation
+HOW_IT_WAS_BUILT.md

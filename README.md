@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KubeLearn - Interactive Kubernetes Learning Platform
 
-## Getting Started
+Welcome to **KubeLearn**, a modern, interactive web application designed to help users learn Kubernetes from foundational concepts to advanced topics.
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Gamified Learning Experience**: Engage with flashcards and interactive multiple-choice quizzes.
+- **Terminal Simulation**: Practice Kubernetes commands in a simulated environment with progressive hints and a "reveal solution" feature.
+- **Persistent Progress**: Your learning progress and quiz results are securely saved locally using an embedded SQLite database.
+- **Responsive Dark-Mode Interface**: Enjoy a premium, accessible user interface optimized for learning.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Tech Stack
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- **Framework**: [Next.js](https://nextjs.org/) (App Router)
+- **Database**: SQLite
+- **Deployment**: Docker & Docker Compose
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🐳 Running Locally with Docker
 
-## Learn More
+The easiest way to run KubeLearn locally is using Docker Compose. This ensures the application and its database volume are perfectly configured.
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/TheChilledCloud/kubelearn-app.git
+   cd kubelearn-app
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Run with Docker Compose:**
+   ```bash
+   docker compose up --build -d
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Access the application:**
+   Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
 
-## Deploy on Vercel
+## 💻 Manual Development Setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+If you prefer to run the development server manually:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+3. Open [http://localhost:3000](http://localhost:3000) with your browser.
+
+## 🤝 HAVE FUN!!!
+
+
