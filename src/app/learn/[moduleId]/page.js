@@ -1,10 +1,13 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { modules } from '@/data/courseContent';
+import { getModules } from '@/data/courseContent';
 import { Flashcard, QuizQuestion, TerminalTyping, ProblemScenario } from '@/components/learning';
 import styles from './learn.module.css';
 import uiStyles from '@/components/ui/styles.module.css';
+import { useLanguage } from '@/context/LanguageContext';
+import { getUI } from '@/i18n';
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 
 export default function LearnPage() {
   const router = useRouter();
@@ -13,6 +16,9 @@ export default function LearnPage() {
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [completedSteps, setCompletedSteps] = useState(new Set());
   const [moduleProgress, setModuleProgress] = useState(null);
+  const { language } = useLanguage();
+  const t = getUI(language);
+  const modules = getModules(language);
 
   const module = modules.find(m => m.id === moduleId);
 
@@ -125,10 +131,10 @@ export default function LearnPage() {
 
   const getBadgeLabel = (type) => {
     switch (type) {
-      case 'concept': return '📖 Concept';
-      case 'quiz': return '❓ Quiz';
-      case 'typing': return '⌨️ Practice';
-      case 'problem': return '🔧 Problem';
+      case 'concept': return t.badgeConcept;
+      case 'quiz': return t.badgeQuiz;
+      case 'typing': return t.badgePractice;
+      case 'problem': return t.badgeProblem;
       default: return type;
     }
   };
@@ -137,14 +143,15 @@ export default function LearnPage() {
     <div className={styles.container}>
       <header className={styles.header}>
         <button onClick={() => router.push('/dashboard')} className={styles.backBtn}>
-          ← Back to Dashboard
+          {t.backToDashboard}
         </button>
         <div className={styles.progressHeader}>
           <h2>{module.title}</h2>
           <div className={styles.stepIndicator}>
-            Step {currentStepIdx + 1} of {module.steps.length}
+            {t.stepLabel} {currentStepIdx + 1} {t.stepOf} {module.steps.length}
           </div>
         </div>
+        <LanguageSwitcher />
       </header>
 
       {/* Progress bar */}
@@ -166,7 +173,7 @@ export default function LearnPage() {
               className={dotClass}
               onClick={() => goToStep(i)}
               title={`${i + 1}. ${step.title}`}
-              aria-label={`Go to step ${i + 1}: ${step.title}`}
+              aria-label={`${t.stepLabel} ${i + 1}: ${step.title}`}
             />
           );
         })}
@@ -200,7 +207,7 @@ export default function LearnPage() {
                   onClick={() => handleStepComplete(10)}
                   className={`${uiStyles.btn} ${uiStyles.primary} ${styles.actionBtn}`}
                 >
-                  I've read and understood
+                  {t.btnUnderstood}
                 </button>
               )}
             </div>
@@ -246,7 +253,7 @@ export default function LearnPage() {
           {stepCompleted && (
             <div className={`${styles.footer} fade-in`}>
               <div className={styles.successMsg}>
-                {isLastStep ? '🎉 Module Completed!' : '✨ Great job! Ready for the next step?'}
+                {isLastStep ? t.msgModuleComplete : t.msgGreatJob}
               </div>
             </div>
           )}
@@ -260,7 +267,7 @@ export default function LearnPage() {
           onClick={prevStep}
           disabled={isFirstStep}
         >
-          ← Previous
+          {t.navPrevious}
         </button>
         <span className={styles.navCenter}>
           {currentStepIdx + 1} / {module.steps.length}
@@ -270,7 +277,7 @@ export default function LearnPage() {
           onClick={nextStep}
           disabled={!stepCompleted}
         >
-          {isLastStep ? '✓ Finish' : 'Next →'}
+          {isLastStep ? t.navFinish : t.navNext}
         </button>
       </nav>
     </div>

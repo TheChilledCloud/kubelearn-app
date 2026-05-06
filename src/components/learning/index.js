@@ -1,9 +1,13 @@
 'use client';
 import { useState, useRef } from 'react';
 import styles from './learning.module.css';
+import { useLanguage } from '@/context/LanguageContext';
+import { getUI } from '@/i18n';
 
 export function Flashcard({ front, back }) {
   const [flipped, setFlipped] = useState(false);
+  const { language } = useLanguage();
+  const t = getUI(language);
 
   return (
     <div 
@@ -13,7 +17,7 @@ export function Flashcard({ front, back }) {
       <div className={styles.flashcardInner}>
         <div className={styles.flashcardFront}>
           <p>{front}</p>
-          <span className={styles.hint}>Click to flip</span>
+          <span className={styles.hint}>{t.clickToFlip}</span>
         </div>
         <div className={styles.flashcardBack}>
           <p>{back}</p>
@@ -26,6 +30,8 @@ export function Flashcard({ front, back }) {
 export function QuizQuestion({ question, options, correctIndex, explanation, onAnswer }) {
   const [selected, setSelected] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
+  const { language } = useLanguage();
+  const t = getUI(language);
 
   const handleSelect = (idx) => {
     if (selected !== null) return;
@@ -55,9 +61,9 @@ export function QuizQuestion({ question, options, correctIndex, explanation, onA
       {selected !== null && (
         <div className={`${styles.explanation} fade-in`}>
           <div className={isCorrect ? styles.explanationCorrect : styles.explanationWrong}>
-            <strong>{isCorrect ? '✓ Correct!' : '✗ Incorrect'}</strong>
+            <strong>{isCorrect ? t.answerCorrect : t.answerIncorrect}</strong>
             {!isCorrect && (
-              <p>The correct answer is: <strong>{options[correctIndex]}</strong></p>
+              <p>{t.correctAnswerIs} <strong>{options[correctIndex]}</strong></p>
             )}
             {explanation && <p className={styles.explanationText}>{explanation}</p>}
           </div>
@@ -72,6 +78,8 @@ export function TerminalTyping({ instruction, expected, hint, onComplete }) {
   const [hintLevel, setHintLevel] = useState(0);
   const [completed, setCompleted] = useState(false);
   const inputRef = useRef(null);
+  const { language } = useLanguage();
+  const t = getUI(language);
 
   const handleChange = (e) => {
     const val = e.target.value;
@@ -94,24 +102,24 @@ export function TerminalTyping({ instruction, expected, hint, onComplete }) {
   const getHintContent = () => {
     if (hintLevel === 0) return null;
     if (hintLevel === 1 && hint) {
-      return <p className={styles.hintText}>💡 Hint: {hint}</p>;
+      return <p className={styles.hintText}>{t.labelHint} {hint}</p>;
     }
     if (hintLevel === 1 && !hint) {
       const words = expected.split(' ');
       const partial = words.map((w, i) => i === 0 ? w : w[0] + '___').join(' ');
-      return <p className={styles.hintText}>💡 Partial: <code>{partial}</code></p>;
+      return <p className={styles.hintText}>{t.labelPartial} <code>{partial}</code></p>;
     }
     if (hintLevel === 2) {
       const words = expected.split(' ');
       const partial = words.map((w, i) => i === 0 ? w : w[0] + '___').join(' ');
-      return <p className={styles.hintText}>💡 Partial: <code>{partial}</code></p>;
+      return <p className={styles.hintText}>{t.labelPartial} <code>{partial}</code></p>;
     }
     if (hintLevel >= 3) {
       return (
         <div className={styles.revealedAnswer}>
-          <p>📋 Answer:</p>
+          <p>{t.labelAnswer}</p>
           <code className={styles.answerCode}>{expected}</code>
-          <p className={styles.revealNote}>Type it above to continue</p>
+          <p className={styles.revealNote}>{t.labelTypeAbove}</p>
         </div>
       );
     }
@@ -120,8 +128,8 @@ export function TerminalTyping({ instruction, expected, hint, onComplete }) {
 
   const maxHint = hint ? 3 : 2;
   const hintLabels = hint
-    ? ['Show Hint', 'Show Partial', 'Reveal Answer']
-    : ['Show Partial', 'Reveal Answer'];
+    ? [t.btnShowHint, t.btnShowPartial, t.btnRevealAnswer]
+    : [t.btnShowPartial, t.btnRevealAnswer];
 
   const getCharMatches = () => {
     if (!input || completed) return null;
@@ -142,7 +150,7 @@ export function TerminalTyping({ instruction, expected, hint, onComplete }) {
     <div className={styles.terminal}>
       <div className={styles.terminalHeader}>
         <div className={styles.dots}><span/><span/><span/></div>
-        <span className={styles.title}>Terminal Simulation</span>
+        <span className={styles.title}>{t.terminalTitle}</span>
       </div>
       <div className={styles.terminalBody}>
         <p className={styles.instruction}># {instruction}</p>
@@ -162,7 +170,7 @@ export function TerminalTyping({ instruction, expected, hint, onComplete }) {
           />
         </div>
         {getCharMatches()}
-        {completed && <p className={styles.success}>✓ Command correct!</p>}
+        {completed && <p className={styles.success}>{t.cmdCorrect}</p>}
         {!completed && (
           <div className={styles.hintArea}>
             {getHintContent()}
@@ -187,6 +195,8 @@ function DiagStepInput({ step, onComplete }) {
   const [hintLevel, setHintLevel] = useState(0);
   const [completed, setCompleted] = useState(false);
   const inputRef = useRef(null);
+  const { language } = useLanguage();
+  const t = getUI(language);
 
   const handleChange = (e) => {
     const val = e.target.value;
@@ -211,24 +221,24 @@ function DiagStepInput({ step, onComplete }) {
   const getHintContent = () => {
     if (hintLevel === 0) return null;
     if (hintLevel === 1) {
-      return <p className={styles.diagHint}>💡 Hint: {step.hint}</p>;
+      return <p className={styles.diagHint}>{t.labelHint} {step.hint}</p>;
     }
     if (hintLevel === 2) {
-      return <p className={styles.diagHint}>💡 Partial: <code className={styles.diagHintCode}>{getPartial()}</code></p>;
+      return <p className={styles.diagHint}>{t.labelPartial} <code className={styles.diagHintCode}>{getPartial()}</code></p>;
     }
     if (hintLevel >= 3) {
       return (
         <div className={styles.diagReveal}>
-          <p>📋 Answer:</p>
+          <p>{t.labelAnswer}</p>
           <code className={styles.answerCode}>{step.command}</code>
-          <p className={styles.revealNote}>Type it above to continue</p>
+          <p className={styles.revealNote}>{t.labelTypeAbove}</p>
         </div>
       );
     }
     return null;
   };
 
-  const hintLabels = ['Show Hint', 'Show Partial', 'Reveal Answer'];
+  const hintLabels = [t.btnShowHint, t.btnShowPartial, t.btnRevealAnswer];
 
   if (completed) return null;
 
@@ -242,7 +252,7 @@ function DiagStepInput({ step, onComplete }) {
           className={styles.terminalInput}
           value={input}
           onChange={handleChange}
-          placeholder="Type the command..."
+          placeholder={t.placeholderTypeCmd}
           autoFocus
           spellCheck="false"
           autoComplete="off"
@@ -283,6 +293,8 @@ export function ProblemScenario({ scenario, steps, solution, takeaways, onComple
   const [diagCompleted, setDiagCompleted] = useState(new Set());
   const [showSolution, setShowSolution] = useState(false);
   const [finished, setFinished] = useState(false);
+  const { language } = useLanguage();
+  const t = getUI(language);
 
   const allDiagDone = steps && diagCompleted.size >= steps.length;
 
@@ -311,15 +323,15 @@ export function ProblemScenario({ scenario, steps, solution, takeaways, onComple
       {/* Scenario description */}
       <div className={styles.scenarioBox}>
         <div className={styles.scenarioIcon}>🚨</div>
-        <h3 className={styles.scenarioTitle}>Scenario</h3>
+        <h3 className={styles.scenarioTitle}>{t.scenarioLabel}</h3>
         <p className={styles.scenarioText}>{scenario}</p>
       </div>
 
       {/* Diagnostic steps */}
       {steps && steps.length > 0 && (
         <div className={styles.diagSection}>
-          <h3 className={styles.diagTitle}>🔍 Diagnostic Steps</h3>
-          <p className={styles.diagSubtitle}>Type each command to investigate the issue. Use hints if you need help!</p>
+          <h3 className={styles.diagTitle}>{t.diagTitle}</h3>
+          <p className={styles.diagSubtitle}>{t.diagSubtitle}</p>
 
           <div className={styles.diagSteps}>
             {steps.map((step, i) => (
@@ -352,7 +364,7 @@ export function ProblemScenario({ scenario, steps, solution, takeaways, onComple
 
                 {diagCompleted.has(i) && i === currentDiagStep && i < steps.length - 1 && (
                   <button className={styles.diagNextBtn} onClick={goNextDiag}>
-                    Next Step →
+                    {t.diagNextStep}
                   </button>
                 )}
               </div>
@@ -367,13 +379,13 @@ export function ProblemScenario({ scenario, steps, solution, takeaways, onComple
           className={styles.revealSolutionBtn}
           onClick={handleRevealSolution}
         >
-          🔓 Reveal Solution & Explanation
+          {t.btnRevealSolution}
         </button>
       )}
 
       {showSolution && (
         <div className={`${styles.solutionBox} fade-in`}>
-          <h3 className={styles.solutionTitle}>✅ Solution</h3>
+          <h3 className={styles.solutionTitle}>{t.solutionTitle}</h3>
           <div className={styles.solutionContent}>
             {solution.split('\n').map((line, i) => (
               <p key={i}>{line}</p>
@@ -382,10 +394,10 @@ export function ProblemScenario({ scenario, steps, solution, takeaways, onComple
 
           {takeaways && takeaways.length > 0 && (
             <div className={styles.takeawaysBox}>
-              <h4 className={styles.takeawaysTitle}>📝 Key Takeaways</h4>
+              <h4 className={styles.takeawaysTitle}>{t.takeawaysTitle}</h4>
               <ul className={styles.takeawaysList}>
-                {takeaways.map((t, i) => (
-                  <li key={i}>{t}</li>
+                {takeaways.map((tw, i) => (
+                  <li key={i}>{tw}</li>
                 ))}
               </ul>
             </div>

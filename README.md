@@ -6,7 +6,8 @@ Welcome to **KubeLearn**, a modern, interactive web application designed to help
 
 - **Gamified Learning Experience**: Engage with flashcards and interactive multiple-choice quizzes.
 - **Terminal Simulation**: Practice Kubernetes commands in a simulated environment with progressive hints and a "reveal solution" feature.
-- **Persistent Progress**: Your learning progress and quiz results are securely saved locally using an embedded SQLite database.
+- **Multilingual (EN/DE)**: Switch between English and German — both the UI and all learning content are fully translated.
+- **Persistent Progress**: Your learning progress and quiz results are securely saved locally using an embedded SQLite database. Progress is preserved across language switches.
 - **Responsive Dark-Mode Interface**: Enjoy a premium, accessible user interface optimized for learning.
 
 ## 🛠️ Tech Stack
@@ -21,8 +22,8 @@ The easiest way to run KubeLearn locally is using Docker Compose. This ensures t
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/TheChilledCloud/kubelearn-app.git
-   cd kubelearn-app
+   git clone <repository-url>
+   cd kubelearn
    ```
 
 2. **Run with Docker Compose:**

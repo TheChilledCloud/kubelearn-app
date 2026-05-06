@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 import uiStyles from '@/components/ui/styles.module.css';
+import { useLanguage } from '@/context/LanguageContext';
+import { getUI } from '@/i18n';
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 
 export default function Home() {
   const [username, setUsername] = useState('');
@@ -10,6 +13,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const { language } = useLanguage();
+  const t = getUI(language);
 
   useEffect(() => {
     const user = localStorage.getItem('k8s_user');
@@ -36,7 +41,7 @@ export default function Home() {
         setError(data.error);
       }
     } catch (err) {
-      setError('Something went wrong');
+      setError(t.errorGeneric);
     } finally {
       setLoading(false);
     }
@@ -44,35 +49,37 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
+      <div className={styles.langSwitcherWrap}>
+        <LanguageSwitcher />
+      </div>
       <div className={styles.hero}>
-        <h1 className="fade-in">Master <span className={styles.accent}>Kubernetes</span></h1>
+        <h1 className="fade-in">{t.heroTitle} <span className={styles.accent}>{t.heroAccent}</span></h1>
         <p className="fade-in" style={{ animationDelay: '0.1s' }}>
-          Interactive learning for K8s and K9s mastery. 
-          Quizzes, flashcards, and real terminal simulations.
+          {t.heroSubtitle}
         </p>
 
         <div className={`${uiStyles.card} ${styles.authCard} fade-in`} style={{ animationDelay: '0.2s' }}>
-          <h2>Start Your Journey</h2>
+          <h2>{t.authTitle}</h2>
           <form onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.field}>
-              <label>Username</label>
+              <label>{t.labelUsername}</label>
               <input 
                 type="text" 
                 className={uiStyles.input}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter username"
+                placeholder={t.placeholderUsername}
                 required
               />
             </div>
             <div className={styles.field}>
-              <label>Password</label>
+              <label>{t.labelPassword}</label>
               <input 
                 type="password" 
                 className={uiStyles.input}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
+                placeholder={t.placeholderPassword}
                 required
               />
             </div>
@@ -82,10 +89,10 @@ export default function Home() {
               className={`${uiStyles.btn} ${uiStyles.primary} ${styles.submitBtn}`}
               disabled={loading}
             >
-              {loading ? 'Processing...' : 'Login / Register'}
+              {loading ? t.btnProcessing : t.btnLogin}
             </button>
           </form>
-          <p className={styles.hint}>New here? Just enter a password to register.</p>
+          <p className={styles.hint}>{t.hintRegister}</p>
         </div>
       </div>
     </main>

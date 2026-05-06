@@ -1,9 +1,12 @@
 'use client';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { modules } from '@/data/courseContent';
+import { getModules } from '@/data/courseContent';
 import styles from './quiz.module.css';
 import uiStyles from '@/components/ui/styles.module.css';
+import { useLanguage } from '@/context/LanguageContext';
+import { getUI } from '@/i18n';
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 
 function shuffleArray(arr) {
   const a = [...arr];
@@ -21,8 +24,11 @@ export default function QuizPage() {
   const [quizStarted, setQuizStarted] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [userAnswers, setUserAnswers] = useState({}); // { [questionIdx]: selectedOptionIdx }
+  const [userAnswers, setUserAnswers] = useState({});
   const [finished, setFinished] = useState(false);
+  const { language } = useLanguage();
+  const t = getUI(language);
+  const modules = getModules(language);
 
   const score = Object.keys(userAnswers).filter(
     k => userAnswers[k] === questions[k].answer
@@ -41,7 +47,7 @@ export default function QuizPage() {
         .filter(s => s.type === 'quiz')
         .map(s => ({ ...s, moduleName: m.title, moduleId: m.id }))
     );
-  }, []);
+  }, [modules]);
 
   const toggleModule = (id) => {
     setSelectedModules(prev =>
@@ -49,20 +55,13 @@ export default function QuizPage() {
     );
   };
 
-  const selectAll = () => {
-    setSelectedModules(modules.map(m => m.id));
-  };
-
-  const deselectAll = () => {
-    setSelectedModules([]);
-  };
+  const selectAll = () => { setSelectedModules(modules.map(m => m.id)); };
+  const deselectAll = () => { setSelectedModules([]); };
 
   const startQuiz = () => {
     const filtered = allQuizSteps.filter(q => selectedModules.includes(q.moduleId));
     if (filtered.length === 0) return;
-    // Shuffle questions and also shuffle options within each question
     const shuffled = shuffleArray(filtered).map(q => {
-      // Create index mapping for option shuffle
       const indices = q.options.map((_, i) => i);
       const shuffledIndices = shuffleArray(indices);
       const shuffledOptions = shuffledIndices.map(i => q.options[i]);
@@ -106,24 +105,11 @@ export default function QuizPage() {
   }, [quizStarted, finished, currentIdx, questions, userAnswers, nextQuestion]);
 
   const prevQuestion = () => {
-    if (currentIdx > 0) {
-      setCurrentIdx(prev => prev - 1);
-    }
+    if (currentIdx > 0) { setCurrentIdx(prev => prev - 1); }
   };
 
-  const exitQuiz = () => {
-    setQuizStarted(false);
-    setFinished(false);
-    setCurrentIdx(0);
-    setUserAnswers({});
-  };
-
-  const restartQuiz = () => {
-    setQuizStarted(false);
-    setFinished(false);
-    setCurrentIdx(0);
-    setUserAnswers({});
-  };
+  const exitQuiz = () => { setQuizStarted(false); setFinished(false); setCurrentIdx(0); setUserAnswers({}); };
+  const restartQuiz = () => { setQuizStarted(false); setFinished(false); setCurrentIdx(0); setUserAnswers({}); };
 
   if (!user) return null;
 
@@ -138,19 +124,20 @@ export default function QuizPage() {
       <div className={styles.container}>
         <header className={styles.header}>
           <button onClick={() => router.push('/dashboard')} className={styles.backBtn}>
-            ← Back to Dashboard
+            {t.backToDashboard}
           </button>
-          <h1>Practice Quiz</h1>
+          <h1>{t.quizTitle}</h1>
+          <LanguageSwitcher />
         </header>
 
         <main className={styles.selectionMain}>
           <div className={styles.selectionCard}>
-            <h2>Select Modules to Quiz</h2>
-            <p className={styles.subtitle}>Choose which modules you want to be tested on. Questions will be randomized.</p>
+            <h2>{t.quizSelectModules}</h2>
+            <p className={styles.subtitle}>{t.quizSubtitle}</p>
 
             <div className={styles.selectActions}>
-              <button onClick={selectAll} className={styles.selectActionBtn}>Select All</button>
-              <button onClick={deselectAll} className={styles.selectActionBtn}>Deselect All</button>
+              <button onClick={selectAll} className={styles.selectActionBtn}>{t.btnSelectAll}</button>
+              <button onClick={deselectAll} className={styles.selectActionBtn}>{t.btnDeselectAll}</button>
             </div>
 
             <div className={styles.moduleList}>
@@ -164,7 +151,7 @@ export default function QuizPage() {
                   />
                   <div className={styles.moduleInfo}>
                     <span className={styles.moduleName}>{m.title}</span>
-                    <span className={styles.questionCount}>{m.quizCount} question{m.quizCount !== 1 ? 's' : ''}</span>
+                    <span className={styles.questionCount}>{m.quizCount} {m.quizCount !== 1 ? t.questionPlural : t.questionSingular}</span>
                   </div>
                 </label>
               ))}
@@ -172,14 +159,14 @@ export default function QuizPage() {
 
             <div className={styles.startArea}>
               <p className={styles.totalQuestions}>
-                {allQuizSteps.filter(q => selectedModules.includes(q.moduleId)).length} questions selected
+                {allQuizSteps.filter(q => selectedModules.includes(q.moduleId)).length} {t.questionsSelected}
               </p>
               <button
                 onClick={startQuiz}
                 className={`${uiStyles.btn} ${uiStyles.primary} ${styles.startBtn}`}
                 disabled={selectedModules.length === 0}
               >
-                Start Quiz
+                {t.btnStartQuiz}
               </button>
             </div>
           </div>
@@ -192,27 +179,27 @@ export default function QuizPage() {
   if (finished) {
     const pct = Math.round((score / questions.length) * 100);
     let grade, gradeClass;
-    if (pct >= 90) { grade = 'Excellent!'; gradeClass = styles.gradeExcellent; }
-    else if (pct >= 70) { grade = 'Good Job!'; gradeClass = styles.gradeGood; }
-    else if (pct >= 50) { grade = 'Keep Practicing'; gradeClass = styles.gradeOk; }
-    else { grade = 'Study More'; gradeClass = styles.gradeLow; }
+    if (pct >= 90) { grade = t.gradeExcellent; gradeClass = styles.gradeExcellent; }
+    else if (pct >= 70) { grade = t.gradeGood; gradeClass = styles.gradeGood; }
+    else if (pct >= 50) { grade = t.gradeOk; gradeClass = styles.gradeOk; }
+    else { grade = t.gradeLow; gradeClass = styles.gradeLow; }
 
     return (
       <div className={styles.container}>
         <main className={styles.resultsMain}>
           <div className={`${styles.resultsCard} fade-in`}>
-            <h1>Quiz Complete!</h1>
+            <h1>{t.quizComplete}</h1>
             <div className={`${styles.gradeCircle} ${gradeClass}`}>
               <span className={styles.gradePercent}>{pct}%</span>
             </div>
             <p className={styles.gradeLabel}>{grade}</p>
-            <p className={styles.scoreLine}>{score} / {questions.length} correct</p>
+            <p className={styles.scoreLine}>{score} / {questions.length} {t.quizCorrectOf}</p>
             <div className={styles.resultActions}>
               <button onClick={restartQuiz} className={`${uiStyles.btn} ${uiStyles.primary}`}>
-                Try Again
+                {t.btnTryAgain}
               </button>
               <button onClick={() => router.push('/dashboard')} className={`${uiStyles.btn} ${uiStyles.secondary}`}>
-                Dashboard
+                {t.btnDashboard}
               </button>
             </div>
           </div>
@@ -230,15 +217,15 @@ export default function QuizPage() {
     <div className={styles.container}>
       <header className={styles.quizHeader}>
         <button onClick={exitQuiz} className={styles.exitBtn}>
-          ✕ Exit Quiz
+          {t.exitQuiz}
         </button>
         <div className={styles.quizProgress}>
-          <span>Question {currentIdx + 1} / {questions.length}</span>
+          <span>{t.quizQuestion} {currentIdx + 1} / {questions.length}</span>
           <div className={styles.quizProgressBar}>
             <div className={styles.quizProgressFill} style={{ width: `${((currentIdx + 1) / questions.length) * 100}%` }} />
           </div>
         </div>
-        <div className={styles.scoreDisplay}>Score: {score} / {answered}</div>
+        <div className={styles.scoreDisplay}>{t.quizScore}: {score} / {answered}</div>
       </header>
 
       <main className={styles.quizMain}>
@@ -264,8 +251,8 @@ export default function QuizPage() {
           {selected !== null && (
             <div className={`${styles.qExplanation} fade-in`}>
               <div className={isCorrect ? styles.qExpCorrect : styles.qExpWrong}>
-                <strong>{isCorrect ? '✓ Correct!' : '✗ Incorrect'}</strong>
-                {!isCorrect && <p>The correct answer is: <strong>{q.options[q.answer]}</strong></p>}
+                <strong>{isCorrect ? t.answerCorrect : t.answerIncorrect}</strong>
+                {!isCorrect && <p>{t.correctAnswerIs} <strong>{q.options[q.answer]}</strong></p>}
                 {q.explanation && <p className={styles.qExpText}>{q.explanation}</p>}
               </div>
             </div>
@@ -277,7 +264,7 @@ export default function QuizPage() {
               className={`${uiStyles.btn} ${uiStyles.secondary} ${styles.prevBtn}`}
               disabled={currentIdx === 0}
             >
-              ← Previous
+              {t.btnPrevQuestion}
             </button>
             
             {(selected !== null || currentIdx + 1 < questions.length) && (
@@ -286,7 +273,7 @@ export default function QuizPage() {
                 className={`${uiStyles.btn} ${uiStyles.primary} ${styles.nextBtn}`}
                 disabled={selected === null && currentIdx + 1 >= questions.length}
               >
-                {currentIdx + 1 >= questions.length ? 'See Results →' : 'Next Question →'}
+                {currentIdx + 1 >= questions.length ? t.btnSeeResults : t.btnNextQuestion}
               </button>
             )}
           </div>

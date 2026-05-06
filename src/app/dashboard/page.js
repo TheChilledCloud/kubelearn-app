@@ -1,14 +1,20 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { modules } from '@/data/courseContent';
+import { getModules } from '@/data/courseContent';
 import styles from './dashboard.module.css';
 import uiStyles from '@/components/ui/styles.module.css';
+import { useLanguage } from '@/context/LanguageContext';
+import { getUI } from '@/i18n';
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [progress, setProgress] = useState([]);
   const router = useRouter();
+  const { language } = useLanguage();
+  const t = getUI(language);
+  const modules = getModules(language);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('k8s_user');
@@ -33,7 +39,7 @@ export default function Dashboard() {
     const p = progress.find(item => item.module_id === moduleId);
     if (!p) return 0;
     const completedSteps = JSON.parse(p.completed_steps).length;
-    const totalSteps = modules.find(m => m.id === moduleId).steps.length;
+    const totalSteps = modules.find(m => m.id === moduleId)?.steps.length || 1;
     return Math.round((completedSteps / totalSteps) * 100);
   };
 
@@ -44,22 +50,23 @@ export default function Dashboard() {
       <header className={styles.header}>
         <div className={styles.brand}>
           <div className={styles.logo}>K8s</div>
-          <h1>Learning Journey</h1>
+          <h1>{t.dashTitle}</h1>
         </div>
         <div className={styles.user}>
-          <span>Welcome, <strong>{user.username}</strong></span>
-          <button onClick={handleLogout} className={`${uiStyles.btn} ${uiStyles.secondary}`}>Logout</button>
+          <LanguageSwitcher />
+          <span>{t.dashWelcome} <strong>{user.username}</strong></span>
+          <button onClick={handleLogout} className={`${uiStyles.btn} ${uiStyles.secondary}`}>{t.btnLogout}</button>
         </div>
       </header>
 
       <main className={styles.main}>
         <section className={styles.summary}>
           <div className={`${uiStyles.card} ${styles.statCard}`}>
-            <h3>Modules Started</h3>
+            <h3>{t.statModulesStarted}</h3>
             <p className={styles.statNumber}>{progress.length}</p>
           </div>
           <div className={`${uiStyles.card} ${styles.statCard}`}>
-            <h3>Total Score</h3>
+            <h3>{t.statTotalScore}</h3>
             <p className={styles.statNumber}>
               {progress.reduce((acc, curr) => acc + curr.score, 0)}
             </p>
@@ -69,9 +76,9 @@ export default function Dashboard() {
             onClick={() => router.push('/quiz')}
             style={{ cursor: 'pointer' }}
           >
-            <h3>Practice Quiz</h3>
+            <h3>{t.statPracticeQuiz}</h3>
             <p className={styles.statEmoji}>🧠</p>
-            <span className={styles.quizLabel}>Test your knowledge →</span>
+            <span className={styles.quizLabel}>{t.statTestKnowledge}</span>
           </div>
         </section>
 
@@ -86,7 +93,7 @@ export default function Dashboard() {
               >
                 <div className={styles.moduleHeader}>
                   <h2>{module.title}</h2>
-                  <span className={styles.badge}>{module.steps.length} Steps</span>
+                  <span className={styles.badge}>{module.steps.length} {t.stepsLabel}</span>
                 </div>
                 <p>{module.description}</p>
                 
@@ -97,14 +104,14 @@ export default function Dashboard() {
                       style={{ width: `${completion}%` }}
                     />
                   </div>
-                  <span className={styles.progressText}>{completion}% Complete</span>
+                  <span className={styles.progressText}>{completion}{t.percentComplete}</span>
                 </div>
 
                 <button 
                   onClick={() => router.push(`/learn/${module.id}`)}
                   className={`${uiStyles.btn} ${uiStyles.primary} ${styles.startBtn}`}
                 >
-                  {completion > 0 ? 'Continue Learning' : 'Start Module'}
+                  {completion > 0 ? t.btnContinue : t.btnStartModule}
                 </button>
               </div>
             );
